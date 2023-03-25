@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CardList from "./CardList";
-import {Box, Typography, Modal, Textfield, Button} from "@mui/material";
+import {Box, Typography, Modal, TextField, Button} from "@mui/material";
 import { bgcolor } from "@mui/system";
 
 const addNewTaskBarStyle = {
@@ -68,13 +68,43 @@ const horizontalStyle = {
 };
 
 function Todo() {
+  //state of modal
+  const [open, setOpen] = useState(false);
+
   const [todo, setTodo] = useState([]);
 
-  //handle Function
-  function handleAdd() {
-    setTodo([...todo, "new task"])
+  //state for validation
+  const [todoInput, setTodoInput] = useState("");
+  const [todoError, settodoError] = useState(true);
+  //MOdal function
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  
+  //handle Input
+  function handleInput(e){
+    setTodoInput(e.target.value);
+    if(e.target.value === null || e.target.value === ""){
+      settodoError(true);
+    }else{
+      settodoError(false);
+    }
   }
+
+  //handle Add button
+  function handleAdd(){
+    setTodo([...todo, todoInput]);
+    setTodoInput("");
+    settodoError(true);
+    handleClose();
+  }
+
+  //handle Function
+  // function handleAdd() {
+  //   setTodo([...todo, "new task"])
+  // }
+
   return (
+    <>
     <Box sx={{ margin: "20px" }}>
       <div style={wrapperHeaderStyle}>
         <div>
@@ -85,7 +115,7 @@ function Todo() {
         <div style={headerTodoListLengthStyle}>{todo.length}</div>
       </div>
       <Box sx={wrapperTodoListStyle}>
-        <Box sx={addNewTaskBarStyle} onClick={handleAdd}>
+        <Box sx={addNewTaskBarStyle} onClick={handleOpen}>
         + Add New Tasks
       </Box>
       {todo.map((item)=>{
@@ -94,6 +124,31 @@ function Todo() {
       </Box>
       <hr style={horizontalStyle} />
     </Box>
+    <Modal 
+        open ={open}
+        onClose ={handleClose}
+        aria-labelledby="modal-modal-title"
+        aira-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <TextField
+            error={todoError}
+            id="todo"
+            label="What do you want to do?"
+            variant="outlined"
+            onChange={(e)=>handleInput(e)}
+          />
+          <Button
+            variant="contained"
+            onClick={handleAdd}
+            sx={{margin: "20px 0px 0px 0px"}}
+            disabled={todoError}
+          >
+            Add
+          </Button>
+        </Box> 
+    </Modal>
+    </>
   );
 }
 export default Todo;
