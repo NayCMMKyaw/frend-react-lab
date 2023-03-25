@@ -118,8 +118,16 @@ function Todo() {
         <Box sx={addNewTaskBarStyle} onClick={handleOpen}>
         + Add New Tasks
       </Box>
-      {todo.map((item)=>{
-        return <CardList task={item}/>
+      {/* Render Todo(s) into CardList */}
+      {todo.map((item, index)=>{
+        return (
+          <CardList 
+        todo={item}
+        key={index}
+        setState={setTodo}
+        state={todo}
+        />
+        );
       })}
       </Box>
       <hr style={horizontalStyle} />
